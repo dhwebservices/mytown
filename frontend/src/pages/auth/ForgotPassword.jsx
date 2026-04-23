@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
 import AuthShell from "@/components/AuthShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,13 +8,14 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function ForgotPassword() {
+  const { sendPasswordReset } = useAuth();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const submit = async (e) => {
     e.preventDefault(); setLoading(true);
-    try { await api.post("/auth/forgot-password", { email }); setSent(true); }
-    catch { toast.error("Something went wrong"); } finally { setLoading(false); }
+    try { await sendPasswordReset(email); setSent(true); }
+    catch (err) { toast.error(err?.message || "Something went wrong"); } finally { setLoading(false); }
   };
   return (
     <AuthShell title="Reset your password" subtitle="Enter your email and we'll send you a reset link." testid="forgot-page">

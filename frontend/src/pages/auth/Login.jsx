@@ -32,7 +32,7 @@ export default function Login() {
     <AuthShell title="Sign in to MyTown" subtitle="One login for customers, businesses and staff." testid="login-page">
       <form onSubmit={submit} className="space-y-4">
         <div>
-          <Label htmlFor="identifier">Email or username</Label>
+          <Label htmlFor="identifier">Email</Label>
           <Input id="identifier" required autoComplete="username" value={identifier} onChange={(e) => setIdentifier(e.target.value)} data-testid="login-identifier" />
         </div>
         <div>

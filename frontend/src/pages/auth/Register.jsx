@@ -19,11 +19,16 @@ export default function Register() {
     e.preventDefault();
     setLoading(true);
     try {
-      const user = await register(form);
-      toast.success("Account created");
-      nav(roleHome(user.role), { replace: true });
+      const result = await register(form);
+      if (result.activeSession) {
+        toast.success("Account created");
+        nav(roleHome(result.user.role), { replace: true });
+      } else {
+        toast.success("Account created. Check your email to confirm your account.");
+        nav("/login", { replace: true });
+      }
     } catch (err) {
-      toast.error(err?.response?.data?.detail || "Registration failed");
+      toast.error(err?.message || err?.response?.data?.detail || "Registration failed");
     } finally { setLoading(false); }
   };
 

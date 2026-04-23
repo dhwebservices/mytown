@@ -17,9 +17,19 @@ export default function AdminUsers({ initial }) {
   const [resetResult, setResetResult] = useState(null);
   const [form, setForm] = useState({ email: "", username: "", password: "", role: "customer", full_name: "", phone: "" });
 
-  useEffect(() => { if (initial === "overview") api.get("/admin/stats").then((r) => setStats(r.data)); }, [initial]);
+  useEffect(() => {
+    if (initial !== "overview") return;
+    api.get("/admin/stats")
+      .then((r) => setStats(r.data))
+      .catch(() => setStats({
+        users: { total: 0, customers: 0 },
+        businesses: { total: 0, published: 0, pending_review: 0 },
+        bookings: { total: 0, pending: 0 },
+        reviews: 0,
+      }));
+  }, [initial]);
   const load = useCallback(
-    () => api.get("/admin/users", { params: { role: role || undefined, q: q || undefined } }).then((r) => setUsers(r.data)),
+    () => api.get("/admin/users", { params: { role: role || undefined, q: q || undefined } }).then((r) => setUsers(r.data)).catch(() => setUsers([])),
     [role, q],
   );
   useEffect(() => { load(); }, [load]);
