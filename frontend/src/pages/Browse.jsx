@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useParams, Link } from "react-router-dom";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,7 @@ export default function Browse() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/categories").then((r) => setCats(r.data)).catch(() => {});
+    api.get("/categories").then((r) => setCats(unwrapList(r.data))).catch(() => setCats([]));
   }, []);
 
   useEffect(() => {
@@ -26,7 +26,8 @@ export default function Browse() {
     if (q) query.q = q;
     if (activeCat) query.category = activeCat;
     api.get("/businesses", { params: query })
-      .then((r) => setItems(r.data))
+      .then((r) => setItems(unwrapList(r.data)))
+      .catch(() => setItems([]))
       .finally(() => setLoading(false));
   }, [q, activeCat]);
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +8,7 @@ import { toast } from "sonner";
 export default function AdminCategories() {
   const [rows, setRows] = useState([]);
   const [form, setForm] = useState({ slug: "", name: "", description: "", icon: "" });
-  const load = () => api.get("/categories").then((r) => setRows(r.data));
+  const load = () => api.get("/categories").then((r) => setRows(unwrapList(r.data))).catch(() => setRows([]));
   useEffect(() => { load(); }, []);
 
   const add = async (e) => {

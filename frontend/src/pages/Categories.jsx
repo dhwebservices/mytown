@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { ArrowRight } from "lucide-react";
 
 export default function Categories() {
   const [cats, setCats] = useState([]);
-  useEffect(() => { api.get("/categories").then((r) => setCats(r.data)); }, []);
+  useEffect(() => { api.get("/categories").then((r) => setCats(unwrapList(r.data))).catch(() => setCats([])); }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-testid="categories-page">

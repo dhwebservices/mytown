@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, ShieldCheck, Star, Clock, ArrowRight } from "lucide-react";
@@ -14,7 +14,7 @@ export default function Home() {
   const [q, setQ] = useState("");
 
   useEffect(() => {
-    api.get("/categories").then((r) => setCategories(r.data)).catch(() => {});
+    api.get("/categories").then((r) => setCategories(unwrapList(r.data))).catch(() => setCategories([]));
   }, []);
 
   return (

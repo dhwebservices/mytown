@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,9 +23,10 @@ export default function BusinessProfile() {
 
   useEffect(() => {
     Promise.all([api.get("/businesses/mine"), api.get("/categories")]).then(([b, c]) => {
-      setCats(c.data);
-      if (b.data.length > 0) {
-        const bz = b.data[0];
+      const businessRows = unwrapList(b.data);
+      setCats(unwrapList(c.data));
+      if (businessRows.length > 0) {
+        const bz = businessRows[0];
         setBiz(bz);
         setForm({
           name: bz.name || "", description: bz.description || "", category_slug: bz.category_slug || "",
@@ -34,6 +35,9 @@ export default function BusinessProfile() {
           price_from: bz.price_from || "",
         });
       }
+    }).catch(() => {
+      setCats([]);
+      setBiz(null);
     }).finally(() => setLoading(false));
   }, []);
 
