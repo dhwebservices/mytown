@@ -19,7 +19,6 @@ from routes import bookings as booking_routes  # noqa: E402
 from routes import reviews as review_routes  # noqa: E402
 from routes import admin as admin_routes  # noqa: E402
 from routes import public as public_routes  # noqa: E402
-from seeds import run_seeds  # noqa: E402
 
 logging.basicConfig(
     level=logging.INFO,
@@ -48,7 +47,6 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    await run_seeds(db)
     logger.info("MyTown API started.")
 
 

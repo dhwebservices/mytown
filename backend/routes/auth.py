@@ -14,6 +14,7 @@ from security import (
     hash_password, verify_password, create_access_token, get_current_user,
 )
 from emailer import send_password_reset
+from supabase_auth import sign_in_user, sign_up_user, admin_update_user
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -41,8 +42,27 @@ async def register(data: RegisterRequest):
     if await db.users.find_one({"username": username}):
         raise HTTPException(400, "Username already taken")
 
+    try:
+        auth_response = sign_up_user(
+            email,
+            data.password,
+            user_metadata={
+                "role": data.role,
+                "username": username,
+                "full_name": data.full_name,
+                "phone": data.phone,
+            },
+        )
+    except RuntimeError as error:
+        raise HTTPException(400, str(error))
+
+    auth_user = auth_response.get("user") or {}
+    auth_user_id = auth_user.get("id")
+    if not auth_user_id:
+        raise HTTPException(500, "Could not create auth user")
+
     user = {
-        "id": new_id(),
+        "id": auth_user_id,
         "email": email,
         "username": username,
         "password_hash": hash_password(data.password),
@@ -65,10 +85,41 @@ async def register(data: RegisterRequest):
 @router.post("/login", response_model=AuthResponse)
 async def login(data: LoginRequest):
     identifier = data.identifier.lower().strip()
-    user = await db.users.find_one({
+    local_user = await db.users.find_one({
         "$or": [{"email": identifier}, {"username": identifier}]
     })
-    if not user or not verify_password(data.password, user["password_hash"]):
+    login_email = local_user["email"] if local_user else identifier
+
+    try:
+        auth_response = sign_in_user(login_email, data.password)
+    except RuntimeError:
+        raise HTTPException(401, "Invalid credentials")
+
+    auth_user = auth_response.get("user") or {}
+    user = await db.users.find_one({"id": auth_user.get("id")}) or local_user
+    if not user and auth_user.get("email"):
+        user = {
+            "id": auth_user["id"],
+            "email": auth_user["email"].lower().strip(),
+            "username": auth_user.get("user_metadata", {}).get("username") or auth_user["email"].split("@")[0],
+            "password_hash": hash_password(data.password),
+            "role": auth_user.get("user_metadata", {}).get("role") or "customer",
+            "full_name": auth_user.get("user_metadata", {}).get("full_name"),
+            "phone": auth_user.get("user_metadata", {}).get("phone"),
+            "status": "active",
+            "email_verified": bool(auth_user.get("email_confirmed_at")),
+            "created_at": now_iso(),
+        }
+        await db.users.insert_one(user)
+    elif user and not verify_password(data.password, user.get("password_hash", "")):
+        await db.users.update_one(
+            {"id": user["id"]},
+            {"$set": {"password_hash": hash_password(data.password), "email_verified": bool(auth_user.get("email_confirmed_at"))}},
+        )
+        user["password_hash"] = hash_password(data.password)
+        user["email_verified"] = bool(auth_user.get("email_confirmed_at"))
+
+    if not user:
         raise HTTPException(401, "Invalid credentials")
     if user.get("status") == "suspended":
         raise HTTPException(403, "Account suspended")
@@ -114,6 +165,15 @@ async def reset_password(data: ResetPasswordRequest):
     expires = datetime.fromisoformat(record["expires_at"])
     if expires < datetime.now(timezone.utc):
         raise HTTPException(400, "Token expired")
+
+    user = await db.users.find_one({"id": record["user_id"]}, {"_id": 0})
+    if not user:
+        raise HTTPException(404, "User not found")
+
+    try:
+        admin_update_user(user["id"], {"password": data.password})
+    except RuntimeError as error:
+        raise HTTPException(400, str(error))
 
     await db.users.update_one(
         {"id": record["user_id"]},

@@ -13,6 +13,7 @@ from models import (
     now_iso, new_id,
 )
 from security import require_role, hash_password
+from supabase_auth import admin_create_user, admin_update_user
 
 router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_role("manager"))])
 
@@ -73,8 +74,29 @@ async def create_user(data: AdminCreateUserRequest):
         raise HTTPException(400, "Email already in use")
     if await db.users.find_one({"username": username}):
         raise HTTPException(400, "Username already in use")
+
+    try:
+        auth_response = admin_create_user(
+            email,
+            data.password,
+            user_metadata={
+                "role": data.role,
+                "username": username,
+                "full_name": data.full_name,
+                "phone": data.phone,
+            },
+            email_confirm=True,
+        )
+    except RuntimeError as error:
+        raise HTTPException(400, str(error))
+
+    auth_user = auth_response.get("user") or {}
+    auth_user_id = auth_user.get("id")
+    if not auth_user_id:
+        raise HTTPException(500, "Could not create auth user")
+
     user = {
-        "id": new_id(),
+        "id": auth_user_id,
         "email": email,
         "username": username,
         "password_hash": hash_password(data.password),
@@ -100,6 +122,28 @@ async def update_user(user_id: str, data: UpdateUserRequest):
         update["email"] = update["email"].lower().strip()
     if "username" in update:
         update["username"] = update["username"].lower().strip()
+
+    supabase_update = {}
+    if "email" in update:
+        supabase_update["email"] = update["email"]
+
+    current_user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not current_user:
+        raise HTTPException(404, "Not found")
+
+    next_user_metadata = {
+        "role": update.get("role", current_user.get("role")),
+        "username": update.get("username", current_user.get("username")),
+        "full_name": update.get("full_name", current_user.get("full_name")),
+        "phone": update.get("phone", current_user.get("phone")),
+    }
+    supabase_update["user_metadata"] = next_user_metadata
+
+    try:
+        admin_update_user(user_id, supabase_update)
+    except RuntimeError as error:
+        raise HTTPException(400, str(error))
+
     await db.users.update_one({"id": user_id}, {"$set": update})
     user = await db.users.find_one({"id": user_id}, {"_id": 0, "password_hash": 0})
     if not user:
@@ -114,6 +158,10 @@ async def admin_reset_password(user_id: str):
         raise HTTPException(404, "Not found")
     # Generate a temporary password and a reset token link
     temp = secrets.token_urlsafe(10)
+    try:
+        admin_update_user(user_id, {"password": temp})
+    except RuntimeError as error:
+        raise HTTPException(400, str(error))
     await db.users.update_one({"id": user_id}, {"$set": {"password_hash": hash_password(temp)}})
     # Also issue a reset link in case they prefer to set their own
     token = secrets.token_urlsafe(32)
