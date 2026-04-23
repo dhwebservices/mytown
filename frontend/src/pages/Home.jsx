@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, ShieldCheck, Star, Clock, ArrowRight } from "lucide-react";
 
-const HERO_IMG = "https://images.pexels.com/photos/35402056/pexels-photo-35402056.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
+const HERO_IMG = "/images/pontypridd-old-bridge.jpg";
 const TRADES_IMG = "https://images.pexels.com/photos/6419128/pexels-photo-6419128.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
 const TOOLS_IMG = "https://images.unsplash.com/photo-1569409612196-2a93825ea659?crop=entropy&cs=srgb&fm=jpg&q=85";
 
@@ -22,7 +22,7 @@ export default function Home() {
       {/* Hero */}
       <section className="relative overflow-hidden" data-testid="home-hero">
         <div className="absolute inset-0">
-          <img src={HERO_IMG} alt="Pontypridd streets" className="w-full h-full object-cover" />
+          <img src={HERO_IMG} alt="Old Bridge, Pontypridd" className="w-full h-full object-cover" />
           <div className="absolute inset-0 hero-overlay" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
