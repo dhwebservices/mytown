@@ -1,0 +1,156 @@
+{
+  "theme": "light",
+  "archetype": "4 (Swiss & High-Contrast) + 1 (Organic & Earthy)",
+  "brand": {
+    "name": "MyTown",
+    "company": "DH Website Services",
+    "tagline": "In Your Area",
+    "description": "Premium local services discovery and booking platform for Pontypridd, Wales."
+  },
+  "typography": {
+    "fonts": {
+      "headings": "Cabinet Grotesk",
+      "body": "Manrope",
+      "monospace": "JetBrains Mono"
+    },
+    "rules": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl tracking-tight font-bold text-slate-900",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight font-semibold text-slate-800",
+      "h3": "text-xl sm:text-2xl font-semibold text-slate-800",
+      "body": "text-base text-slate-600 leading-relaxed",
+      "small": "text-sm text-slate-500",
+      "overline": "text-xs font-bold uppercase tracking-[0.2em] text-slate-400"
+    }
+  },
+  "colors": {
+    "background": {
+      "primary": "#FAFAF9",
+      "secondary": "#F5F5F4",
+      "tertiary": "#E7E5E4",
+      "inverse": "#0F172A"
+    },
+    "text": {
+      "primary": "#0F172A",
+      "secondary": "#475569",
+      "tertiary": "#64748B",
+      "inverse": "#FAFAF9"
+    },
+    "primary": {
+      "DEFAULT": "#0F172A",
+      "hover": "#1E293B",
+      "foreground": "#FFFFFF"
+    },
+    "accent": {
+      "DEFAULT": "#D97706",
+      "hover": "#B45309",
+      "foreground": "#FFFFFF",
+      "description": "Warm Ochre for CTAs and highlights. Feels trustworthy and premium."
+    },
+    "success": "#166534",
+    "warning": "#CA8A04",
+    "error": "#991B1B",
+    "border": "#E2E8F0"
+  },
+  "spacing": {
+    "generous_scale": ["p-6", "p-8", "p-12", "p-16", "p-24"],
+    "dashboard_scale": ["p-4", "p-6", "gap-4", "gap-6"],
+    "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "section_gap": "py-20 lg:py-32"
+  },
+  "components": {
+    "business_cards": {
+      "style": "solid flat background, 1px subtle border (border-slate-200), zero or subtle ambient shadow, sharp or max rounded-md.",
+      "hover": "translate-y-[-2px] shadow-md border-slate-300 transition-all duration-200"
+    },
+    "category_chips": {
+      "style": "bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-full px-4 py-2 transition-colors inline-flex items-center gap-2 cursor-pointer"
+    },
+    "rating_stars": {
+      "style": "text-amber-500 w-4 h-4"
+    },
+    "booking_widget": {
+      "style": "bg-white border border-slate-200 rounded-lg p-6 shadow-sm. Use Shadcn calendar. Clean, dense, data-focused layout."
+    },
+    "buttons": {
+      "primary": "bg-slate-900 text-white hover:bg-slate-800 rounded-md px-6 py-2.5 font-medium transition-colors",
+      "accent": "bg-amber-600 text-white hover:bg-amber-700 rounded-md px-6 py-2.5 font-medium transition-colors",
+      "outline": "bg-transparent border-2 border-slate-200 text-slate-900 hover:border-slate-900 rounded-md px-6 py-2 transition-colors"
+    },
+    "empty_states": {
+      "style": "Minimalist text and functional CTA. No cartoonish illustrations. Use Phosphor or Lucide icons in a large, muted color (text-slate-300) centered above the text."
+    },
+    "inputs": {
+      "style": "Shadcn defaults customized with rounded-md, border-slate-300, focus:ring-2 focus:ring-slate-900 focus:border-transparent."
+    }
+  },
+  "layouts": {
+    "marketing_site": {
+      "hero": "Mobile-first, asymmetrical or grid-based (Bento Grid Mode A). High contrast imagery, overlaid with text (max bg-black/40 overlay). Use strong typography and generous padding.",
+      "sections": "Alternating background colors (white to stone-50). Deep navy footer with oversized typography."
+    },
+    "dashboards": {
+      "manager": "Strict control-room grid (Bento Mode B). Dense spacing. Sticky sidebar on desktop, bottom nav or hamburger on mobile. Data tables for users/businesses.",
+      "business": "Sidebar navigation. Highlight inbox/bookings and calendar availability. Flat cards for metrics.",
+      "customer": "Simplified dashboard. Focus on upcoming bookings and past reviews. Clean list views."
+    }
+  },
+  "motion": {
+    "hover": "Subtle transform and shadow shifts. transition-all duration-200 ease-in-out.",
+    "page_transitions": "Fade in.",
+    "list_items": "Staggered entrance using Framer Motion (opacity 0 to 1, y: 10 to 0)."
+  },
+  "accessibility": {
+    "contrast": "All text must pass WCAG AA (4.5:1). Dark slate text on light backgrounds.",
+    "focus": "focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2",
+    "testing": "All interactive elements MUST include data-testid attribute (e.g., data-testid='book-now-button')."
+  },
+  "media": {
+    "instructions": "Use these exact URLs for placing real imagery in the application. Do not use placeholder services. Treat tradespeople with respect (professional, high-quality imagery).",
+    "image_urls": {
+      "hero_backgrounds": [
+        {
+          "url": "https://images.pexels.com/photos/35402056/pexels-photo-35402056.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+          "description": "Charming Victorian-style terraced houses in UK, showcasing classic architecture. Use for Pontypridd/local location context."
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1672825454602-c915be646233?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHwxfHx3YWxlcyUyMHRvd258ZW58MHx8fHwxNzc2OTc2NTk2fDA&ixlib=rb-4.1.0&q=85",
+          "description": "Wales town street view. Good for local community pages or about us."
+        }
+      ],
+      "tradespeople": [
+        {
+          "url": "https://images.pexels.com/photos/6419128/pexels-photo-6419128.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+          "description": "Close-up of a plumber's hands installing steel pipes indoors, showcasing skilled manual work. Good for plumbing category."
+        },
+        {
+          "url": "https://images.pexels.com/photos/9679179/pexels-photo-9679179.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+          "description": "Technician working on circuit breaker panel. Good for electrician category."
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1768839725085-829e6ac7ac26?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1NzZ8MHwxfHNlYXJjaHwxfHxwYWludGVyJTIwZGVjb3JhdGluZ3xlbnwwfHx8fDE3NzY5NzY1OTZ8MA&ixlib=rb-4.1.0&q=85",
+          "description": "Hands applying plaster to a wall with trowels. Good for decorating/plastering category."
+        }
+      ],
+      "tools_and_details": [
+        {
+          "url": "https://images.unsplash.com/photo-1569409612196-2a93825ea659?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2MzR8MHwxfHNlYXJjaHwyfHxjYXJwZW50ZXIlMjB0b29scyUyMGNsb3NlJTIwdXB8ZW58MHx8fHwxNzc2OTc2NTg5fDA&ixlib=rb-4.1.0&q=85",
+          "description": "Handheld tool lot. Good for handyman category or general platform features."
+        },
+        {
+          "url": "https://images.unsplash.com/photo-1771122453274-d3270e73cf94?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwxfHxwbHVtYmVyJTIwd29ya2luZ3xlbnwwfHx8fDE3NzY5NzY1OTZ8MA&ixlib=rb-4.1.0&q=85",
+          "description": "Close-up of a tool bag with various items inside. Excellent for background textures or general service sections."
+        }
+      ]
+    }
+  },
+  "instructions_to_main_agent": [
+    "Strictly adhere to the selected fonts: Cabinet Grotesk for headings, Manrope for body. DO NOT use Inter or Space Grotesk.",
+    "Do not use generic SaaS gradients or purple palettes. Stick to the Slate and Ochre/Amber palette.",
+    "Create a solid, grid-based layout for dashboards, minimizing white space but maintaining clear section borders.",
+    "Ensure all interactive elements have a `data-testid` attribute.",
+    "Use pure HTML/Tailwind for marketing sections to ensure creative layouts, but rely on customized Shadcn components for forms, modals, and data tables.",
+    "Always apply a dark transparent overlay (e.g. bg-slate-900/40) over hero images to guarantee text readability.",
+    "Use Lucide-react for icons.",
+    "Implement JS (.js) files, not TSX."
+  ]
+}
