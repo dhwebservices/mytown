@@ -10,6 +10,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
+load_dotenv(ROOT_DIR / ".env.local", override=True)
 
 from db import db, client  # noqa: E402
 from routes import auth as auth_routes  # noqa: E402

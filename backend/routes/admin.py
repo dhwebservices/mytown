@@ -14,6 +14,7 @@ from models import (
 )
 from security import require_role, hash_password
 from supabase_auth import admin_create_user, admin_update_user
+from profile_sync import try_sync_profile_row
 
 router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(require_role("manager"))])
 
@@ -108,6 +109,7 @@ async def create_user(data: AdminCreateUserRequest):
         "created_at": now_iso(),
     }
     await db.users.insert_one(user)
+    try_sync_profile_row(user)
     user.pop("password_hash", None)
     user.pop("_id", None)
     return user
@@ -148,6 +150,7 @@ async def update_user(user_id: str, data: UpdateUserRequest):
     user = await db.users.find_one({"id": user_id}, {"_id": 0, "password_hash": 0})
     if not user:
         raise HTTPException(404, "Not found")
+    try_sync_profile_row(user)
     return user
 
 
@@ -163,6 +166,8 @@ async def admin_reset_password(user_id: str):
     except RuntimeError as error:
         raise HTTPException(400, str(error))
     await db.users.update_one({"id": user_id}, {"$set": {"password_hash": hash_password(temp)}})
+    user["password_hash"] = hash_password(temp)
+    try_sync_profile_row(user)
     # Also issue a reset link in case they prefer to set their own
     token = secrets.token_urlsafe(32)
     expires = (datetime.now(timezone.utc) + timedelta(hours=2)).isoformat()
@@ -182,12 +187,18 @@ async def admin_reset_password(user_id: str):
 @router.post("/users/{user_id}/suspend")
 async def suspend_user(user_id: str):
     await db.users.update_one({"id": user_id}, {"$set": {"status": "suspended"}})
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if user:
+        try_sync_profile_row(user)
     return {"ok": True}
 
 
 @router.post("/users/{user_id}/activate")
 async def activate_user(user_id: str):
     await db.users.update_one({"id": user_id}, {"$set": {"status": "active"}})
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if user:
+        try_sync_profile_row(user)
     return {"ok": True}
 
 

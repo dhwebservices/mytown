@@ -15,6 +15,7 @@ from security import (
 )
 from emailer import send_password_reset
 from supabase_auth import sign_in_user, sign_up_user, admin_update_user
+from profile_sync import try_sync_profile_row
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -74,6 +75,7 @@ async def register(data: RegisterRequest):
         "created_at": now_iso(),
     }
     await db.users.insert_one(user)
+    try_sync_profile_row(user)
     await _audit(user["id"], "user.register", f"user:{user['id']}", {"role": data.role})
 
     token = create_access_token(user["id"], user["role"])
@@ -111,6 +113,7 @@ async def login(data: LoginRequest):
             "created_at": now_iso(),
         }
         await db.users.insert_one(user)
+        try_sync_profile_row(user)
     elif user and not verify_password(data.password, user.get("password_hash", "")):
         await db.users.update_one(
             {"id": user["id"]},
@@ -118,6 +121,7 @@ async def login(data: LoginRequest):
         )
         user["password_hash"] = hash_password(data.password)
         user["email_verified"] = bool(auth_user.get("email_confirmed_at"))
+        try_sync_profile_row(user)
 
     if not user:
         raise HTTPException(401, "Invalid credentials")
@@ -179,6 +183,8 @@ async def reset_password(data: ResetPasswordRequest):
         {"id": record["user_id"]},
         {"$set": {"password_hash": hash_password(data.password)}},
     )
+    user["password_hash"] = hash_password(data.password)
+    try_sync_profile_row(user)
     await db.password_resets.update_one(
         {"id": record["id"]},
         {"$set": {"used": True, "used_at": now_iso()}},
