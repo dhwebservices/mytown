@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,11 @@ export default function AdminUsers({ initial }) {
   const [form, setForm] = useState({ email: "", username: "", password: "", role: "customer", full_name: "", phone: "" });
 
   useEffect(() => { if (initial === "overview") api.get("/admin/stats").then((r) => setStats(r.data)); }, [initial]);
-  const load = () => api.get("/admin/users", { params: { role: role || undefined, q: q || undefined } }).then((r) => setUsers(r.data));
-  useEffect(() => { load(); }, [role, q]);
+  const load = useCallback(
+    () => api.get("/admin/users", { params: { role: role || undefined, q: q || undefined } }).then((r) => setUsers(r.data)),
+    [role, q],
+  );
+  useEffect(() => { load(); }, [load]);
 
   const suspend = async (id) => { await api.post(`/admin/users/${id}/suspend`); load(); };
   const activate = async (id) => { await api.post(`/admin/users/${id}/activate`); load(); };
