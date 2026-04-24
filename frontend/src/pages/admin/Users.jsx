@@ -16,6 +16,22 @@ export default function AdminUsers({ initial }) {
   const [creating, setCreating] = useState(false);
   const [resetResult, setResetResult] = useState(null);
   const [form, setForm] = useState({ email: "", username: "", password: "", role: "customer", full_name: "", phone: "" });
+  const safeStats = {
+    users: {
+      total: stats?.users?.total ?? 0,
+      customers: stats?.users?.customers ?? 0,
+    },
+    businesses: {
+      total: stats?.businesses?.total ?? 0,
+      published: stats?.businesses?.published ?? 0,
+      pending_review: stats?.businesses?.pending_review ?? 0,
+    },
+    bookings: {
+      total: stats?.bookings?.total ?? 0,
+      pending: stats?.bookings?.pending ?? 0,
+    },
+    reviews: stats?.reviews ?? 0,
+  };
 
   useEffect(() => {
     if (initial !== "overview") return;
@@ -53,14 +69,14 @@ export default function AdminUsers({ initial }) {
           <h1 className="font-display text-3xl font-semibold mb-4">Platform overview</h1>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { t: "Users", v: stats.users.total },
-              { t: "Customers", v: stats.users.customers },
-              { t: "Businesses", v: stats.businesses.total },
-              { t: "Published", v: stats.businesses.published },
-              { t: "Pending review", v: stats.businesses.pending_review },
-              { t: "Bookings", v: stats.bookings.total },
-              { t: "Pending bookings", v: stats.bookings.pending },
-              { t: "Reviews", v: stats.reviews },
+              { t: "Users", v: safeStats.users.total },
+              { t: "Customers", v: safeStats.users.customers },
+              { t: "Businesses", v: safeStats.businesses.total },
+              { t: "Published", v: safeStats.businesses.published },
+              { t: "Pending review", v: safeStats.businesses.pending_review },
+              { t: "Bookings", v: safeStats.bookings.total },
+              { t: "Pending bookings", v: safeStats.bookings.pending },
+              { t: "Reviews", v: safeStats.reviews },
             ].map((x) => (
               <div key={x.t} className="rounded-lg border border-slate-200 bg-white p-5">
                 <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{x.t}</div>

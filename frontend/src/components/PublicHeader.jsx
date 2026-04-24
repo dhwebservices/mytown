@@ -20,8 +20,11 @@ export default function PublicHeader() {
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-[hsl(48,33%,97%)]/85 backdrop-blur" data-testid="public-header">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2" data-testid="brand-link">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-900 text-white font-display font-bold">M</span>
-          <span className="font-display text-xl font-bold tracking-tight">MyTown</span>
+          <img src="/dh-logo-icon.png" alt="DH Website Services" className="h-9 w-9 rounded-md object-contain bg-white" />
+          <div className="flex flex-col leading-none">
+            <span className="font-display text-lg font-bold tracking-tight text-slate-900">DH Website Services</span>
+            <span className="text-xs font-medium text-slate-500">MyTown</span>
+          </div>
           <span className="ml-2 hidden sm:inline-flex items-center gap-1 text-xs text-slate-500 border border-slate-200 rounded-full px-2 py-0.5">
             <MapPin className="h-3 w-3" /> Pontypridd beta
           </span>

@@ -14,8 +14,11 @@ export default function DashboardLayout({ title, links, testid }) {
       <aside className={`${open ? "fixed inset-0 z-40 w-full" : "hidden"} lg:block lg:relative lg:w-64 flex-shrink-0 bg-slate-900 text-slate-100`}>
         <div className="p-5 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-amber-600 text-white font-display font-bold">M</span>
-            <span className="font-display text-lg font-bold text-white">MyTown</span>
+            <img src="/dh-logo-icon.png" alt="DH Website Services" className="h-9 w-9 rounded-md object-contain bg-white" />
+            <div className="flex flex-col leading-none">
+              <span className="font-display text-sm font-bold text-white">DH Website Services</span>
+              <span className="text-[11px] font-medium text-slate-400">MyTown</span>
+            </div>
           </Link>
           <button className="lg:hidden text-slate-300" onClick={() => setOpen(false)}><X /></button>
         </div>
@@ -48,7 +51,13 @@ export default function DashboardLayout({ title, links, testid }) {
       <div className="flex-1 flex flex-col min-w-0">
         <div className="lg:hidden border-b border-slate-200 bg-white px-4 h-14 flex items-center justify-between">
           <button onClick={() => setOpen(true)} data-testid="mobile-sidebar-toggle"><Menu /></button>
-          <div className="font-display font-bold">MyTown · {title}</div>
+          <div className="flex items-center gap-2 min-w-0">
+            <img src="/dh-logo-icon.png" alt="DH Website Services" className="h-7 w-7 rounded-md object-contain bg-white" />
+            <div className="min-w-0">
+              <div className="font-display font-bold leading-none text-slate-900">DH Website Services</div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-slate-500">{title}</div>
+            </div>
+          </div>
           <div className="w-6" />
         </div>
         <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6 lg:py-10 max-w-7xl w-full mx-auto">
