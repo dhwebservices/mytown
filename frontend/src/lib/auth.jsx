@@ -2,9 +2,10 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 
 const AuthCtx = createContext(null);
 
-const SUPABASE_URL = (process.env.REACT_APP_SUPABASE_URL || "https://kqefspfdctnxzonirner.supabase.co").trim().replace(/\/$/, "");
-const SUPABASE_ANON_KEY = (process.env.REACT_APP_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtxZWZzcGZkY3RueHpvbmlybmVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5NzA5NjksImV4cCI6MjA5MjU0Njk2OX0.Tj91xZYrYaHsUSARk_6Y0xRqzOOJYy86nbmBvzCPcmw").trim();
+const SUPABASE_URL = (process.env.REACT_APP_SUPABASE_URL || "").trim().replace(/\/$/, "");
+const SUPABASE_ANON_KEY = (process.env.REACT_APP_SUPABASE_ANON_KEY || "").trim();
 const SESSION_KEY = "mytown_supabase_session";
+const AUTH_NOT_CONFIGURED_MESSAGE = "Authentication is not configured yet. Add the Supabase environment variables in Cloudflare Pages.";
 
 function readStoredSession() {
   try {
@@ -39,6 +40,9 @@ function normalizeUser(authUser) {
 }
 
 async function supabaseRequest(path, { method = "GET", body, token } = {}) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    throw new Error(AUTH_NOT_CONFIGURED_MESSAGE);
+  }
   const response = await fetch(`${SUPABASE_URL}${path}`, {
     method,
     headers: {
@@ -62,6 +66,11 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
     const session = readStoredSession();
     if (!session?.access_token) {
       setUser(null);
