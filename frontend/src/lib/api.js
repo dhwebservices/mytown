@@ -2,6 +2,7 @@ import axios from "axios";
 
 const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "").trim().replace(/\/$/, "");
 export const API_BASE = BACKEND_URL ? `${BACKEND_URL}/api` : "/api";
+const SUPABASE_SESSION_KEY = "mytown_supabase_session";
 
 export const api = axios.create({ baseURL: API_BASE });
 
@@ -19,7 +20,16 @@ export function unwrapFirst(data) {
 }
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("mytown_token");
+  let token = localStorage.getItem("mytown_token");
+  if (!token) {
+    try {
+      const raw = localStorage.getItem(SUPABASE_SESSION_KEY);
+      const session = raw ? JSON.parse(raw) : null;
+      token = session?.access_token || "";
+    } catch {
+      token = "";
+    }
+  }
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
