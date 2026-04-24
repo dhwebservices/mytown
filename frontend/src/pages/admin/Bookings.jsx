@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import EmptyState from "@/components/EmptyState";
 import { Calendar } from "lucide-react";
 
 export default function AdminBookings() {
   const [rows, setRows] = useState([]);
-  useEffect(() => { api.get("/admin/bookings").then((r) => setRows(r.data)); }, []);
+  useEffect(() => { api.get("/admin/bookings").then((r) => setRows(unwrapList(r.data))).catch(() => setRows([])); }, []);
   return (
     <div data-testid="admin-bookings">
       <h1 className="font-display text-3xl font-semibold mb-5">All bookings</h1>

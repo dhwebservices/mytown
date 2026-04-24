@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 
 export default function AdminAudit() {
   const [rows, setRows] = useState([]);
-  useEffect(() => { api.get("/admin/audit-logs").then((r) => setRows(r.data)); }, []);
+  useEffect(() => { api.get("/admin/audit-logs").then((r) => setRows(unwrapList(r.data))).catch(() => setRows([])); }, []);
   return (
     <div data-testid="admin-audit">
       <h1 className="font-display text-3xl font-semibold mb-5">Audit logs</h1>

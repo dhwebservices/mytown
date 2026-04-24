@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,11 +18,15 @@ export default function BusinessAvailability() {
 
   useEffect(() => {
     api.get("/businesses/mine").then(async ({ data }) => {
-      if (data.length) {
-        setBiz(data[0]);
-        const r = await api.get(`/businesses/${data[0].id}/availability`);
-        setSlots(r.data);
+      const businesses = unwrapList(data);
+      if (businesses.length) {
+        setBiz(businesses[0]);
+        const r = await api.get(`/businesses/${businesses[0].id}/availability`);
+        setSlots(unwrapList(r.data));
       }
+    }).catch(() => {
+      setBiz(null);
+      setSlots([]);
     }).finally(() => setLoading(false));
   }, []);
 

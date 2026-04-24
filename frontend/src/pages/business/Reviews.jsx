@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import EmptyState from "@/components/EmptyState";
 import { Star } from "lucide-react";
 
@@ -8,9 +8,13 @@ export default function BusinessReviews() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     api.get("/businesses/mine").then(async ({ data }) => {
-      if (!data.length) return setLoading(false);
-      const r = await api.get(`/businesses/${data[0].id}/reviews`);
-      setReviews(r.data); setLoading(false);
+      const businesses = unwrapList(data);
+      if (!businesses.length) return setLoading(false);
+      const r = await api.get(`/businesses/${businesses[0].id}/reviews`);
+      setReviews(unwrapList(r.data)); setLoading(false);
+    }).catch(() => {
+      setReviews([]);
+      setLoading(false);
     });
   }, []);
   return (

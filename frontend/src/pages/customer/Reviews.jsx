@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Star } from "lucide-react";
 import EmptyState from "@/components/EmptyState";
 
 export default function CustomerReviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => { api.get("/reviews/mine").then((r) => setReviews(r.data)).finally(() => setLoading(false)); }, []);
+  useEffect(() => { api.get("/reviews/mine").then((r) => setReviews(unwrapList(r.data))).catch(() => setReviews([])).finally(() => setLoading(false)); }, []);
 
   return (
     <div data-testid="customer-reviews">

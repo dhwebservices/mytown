@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 export default function AdminBusinesses() {
   const [rows, setRows] = useState([]);
-  const load = () => api.get("/admin/businesses").then((r) => setRows(r.data));
+  const load = () => api.get("/admin/businesses").then((r) => setRows(unwrapList(r.data))).catch(() => setRows([]));
   useEffect(() => { load(); }, []);
 
   const approve = async (id) => { await api.post(`/admin/businesses/${id}/approve`); toast.success("Approved"); load(); };

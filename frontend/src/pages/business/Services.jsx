@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,11 +16,15 @@ export default function BusinessServices() {
 
   useEffect(() => {
     api.get("/businesses/mine").then(async ({ data }) => {
-      if (data.length) {
-        setBiz(data[0]);
-        const r = await api.get(`/businesses/${data[0].id}/services`);
-        setServices(r.data);
+      const businesses = unwrapList(data);
+      if (businesses.length) {
+        setBiz(businesses[0]);
+        const r = await api.get(`/businesses/${businesses[0].id}/services`);
+        setServices(unwrapList(r.data));
       }
+    }).catch(() => {
+      setBiz(null);
+      setServices([]);
     }).finally(() => setLoading(false));
   }, []);
 

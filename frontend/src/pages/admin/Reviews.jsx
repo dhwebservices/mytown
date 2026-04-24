@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/EmptyState";
 import { Star } from "lucide-react";
 
 export default function AdminReviews() {
   const [rows, setRows] = useState([]);
-  const load = () => api.get("/admin/reviews").then((r) => setRows(r.data));
+  const load = () => api.get("/admin/reviews").then((r) => setRows(unwrapList(r.data))).catch(() => setRows([]));
   useEffect(() => { load(); }, []);
 
   const toggle = async (r) => {

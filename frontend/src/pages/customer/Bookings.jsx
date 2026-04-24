@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -27,7 +27,7 @@ export default function CustomerBookings() {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
 
-  const load = () => api.get("/bookings/mine").then((r) => setBookings(r.data)).finally(() => setLoading(false));
+  const load = () => api.get("/bookings/mine").then((r) => setBookings(unwrapList(r.data))).catch(() => setBookings([])).finally(() => setLoading(false));
   useEffect(() => { load(); }, []);
 
   const cancel = async (id) => {

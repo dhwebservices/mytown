@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import EmptyState from "@/components/EmptyState";
@@ -25,7 +25,7 @@ const NEXT_ACTIONS = {
 export default function BusinessBookings() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const load = () => api.get("/bookings/mine").then((r) => setRows(r.data)).finally(() => setLoading(false));
+  const load = () => api.get("/bookings/mine").then((r) => setRows(unwrapList(r.data))).catch(() => setRows([])).finally(() => setLoading(false));
   useEffect(() => { load(); }, []);
 
   const change = async (id, status) => {

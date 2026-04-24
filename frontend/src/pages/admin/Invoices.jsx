@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import EmptyState from "@/components/EmptyState";
 import { FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function AdminInvoices() {
   const [rows, setRows] = useState([]);
-  useEffect(() => { api.get("/admin/invoices").then((r) => setRows(r.data)); }, []);
+  useEffect(() => { api.get("/admin/invoices").then((r) => setRows(unwrapList(r.data))).catch(() => setRows([])); }, []);
   return (
     <div data-testid="admin-invoices">
       <h1 className="font-display text-3xl font-semibold mb-5">Invoices</h1>

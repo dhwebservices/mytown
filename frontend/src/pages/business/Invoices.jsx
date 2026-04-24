@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import EmptyState from "@/components/EmptyState";
 import { FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 export default function BusinessInvoices() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => { api.get("/my-invoices").then((r) => setRows(r.data)).finally(() => setLoading(false)); }, []);
+  useEffect(() => { api.get("/my-invoices").then((r) => setRows(unwrapList(r.data))).catch(() => setRows([])).finally(() => setLoading(false)); }, []);
 
   return (
     <div data-testid="business-invoices">
