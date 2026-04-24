@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, unwrapList } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,7 +45,10 @@ export default function AdminUsers({ initial }) {
       }));
   }, [initial]);
   const load = useCallback(
-    () => api.get("/admin/users", { params: { role: role || undefined, q: q || undefined } }).then((r) => setUsers(r.data)).catch(() => setUsers([])),
+    () =>
+      api.get("/admin/users", { params: { role: role || undefined, q: q || undefined } })
+        .then((r) => setUsers(unwrapList(r.data)))
+        .catch(() => setUsers([])),
     [role, q],
   );
   useEffect(() => { load(); }, [load]);
